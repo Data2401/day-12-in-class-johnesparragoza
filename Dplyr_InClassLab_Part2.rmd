@@ -67,7 +67,6 @@ my_flights %>%
 5. On average, did flights gain or lose time? Note: use the `na.rm = TRUE` argument to remove NA values from your calc
 
 ```{r}
-
 mean(my_flights$gain, na.rm = T)
 ```
 
@@ -85,7 +84,6 @@ hou_flights
 
 
 ```{r}
-
 mean(hou_flights$gain, na.rm = T)
 ```
 
@@ -126,7 +124,6 @@ my_flights %>%
   group_by(origin) %>% 
   slice_max(arr_delay, n = 1) %>% 
   select(origin, dest, carrier, arr_delay, everything())
-
 ```
 
 Getting ready for next class: look at all the different values for the  airport.
@@ -165,7 +162,11 @@ starwars %>% count(homeworld) %>% arrange(-n)
 If you wanted to arrange this in descending order, what would you add to the pipe? 
 
 ```{r}
-
+#answered the same way in the previous question
+starwars %>% 
+  group_by(homeworld) %>% 
+  summarise(n_characters = n())
+starwars %>% count(homeworld) %>% arrange(-n)
 ```
 
 Find the average height for each eye color. You might find some of the answers to be strange, but keep going! 
@@ -173,8 +174,7 @@ Find the average height for each eye color. You might find some of the answers t
 ```{r}
 starwars %>% 
   group_by(eye_color) %>%
-  summarise(mean_heigh = mean(height))
-
+  summarise(mean_height = mean(height))
 ```
 
 So.... What's with the NAs? Filter down to just brown eyes find out what's going on. 
@@ -184,21 +184,33 @@ So.... What's with the NAs? Filter down to just brown eyes find out what's going
 starwars %>% 
   filter(eye_color == "brown")%>%
   summarise(mean_height = mean(height))
-
 ```
 
 Okay, so we have missing data here. Try summarising with `drop_na(height)` instead of just `height` or adding `na.rm = T` to the mean function inside summarize. 
 
 
 ```{r}
-
-
+starwars %>% 
+  filter(eye_color == "brown") %>% 
+  summarise(mean_height = mean(height, na.rm = TRUE))
 ```
 
 So, who is the tallest male? How many blue eyed women are there? How many genders are there? Answer these questions and spend some time asking and answering some of your own. (Or, move to the homework and start working on the questions I ask there!)
 
 
 ```{r}
+# tallest male
+starwars %>%
+  filter(sex == "male") %>% 
+  arrange(-height)
 
+# blue eyed women
+blue_females <- starwars %>%
+  select(eye_color, sex) %>% 
+  filter(sex == "female", eye_color == "blue")
+
+blue_females   #tibble
+
+blue_females %>% summarise(n = n())   #count
 
 ```
